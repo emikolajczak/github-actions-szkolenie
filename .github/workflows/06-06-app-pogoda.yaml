@@ -13,9 +13,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    env:
-      LOCAL_IMAGE_NAME: python_pogoda:test
-      WORKDIR: ./CWICZENIA/06-context/pogoda_python_flusk
+    defaults:
+      run:
+        WORKDIR: ./CWICZENIA/06-context/pogoda_python_flusk
 
     steps:
       - name: Checkout repository
