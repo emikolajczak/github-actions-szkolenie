@@ -1,0 +1,21 @@
+name: "06 – Contexts"
+run-name: 06-04 - Python Pogoda dla ${{ inputs.city }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      city:
+        type: string
+        default: "Warszawa"
+
+env:
+  MY_KLUCZYK: "TWOJ_KLUCZ_API"
+
+jobs:
+  echo-data:
+    runs-on: lab
+    steps:
+      - name: Pobierz informacje o pogodzie
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+
