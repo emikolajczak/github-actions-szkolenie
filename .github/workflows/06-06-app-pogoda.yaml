@@ -23,7 +23,7 @@ jobs:
 
       - name: Build Docker image for local testing
         run: |
-          docker build -t "$LOCAL_IMAGE_NAME" "./CWICZENIA/06-context/pogoda_python_flusk
+          docker build -t "$LOCAL_IMAGE_NAME" "./CWICZENIA/06-context/pogoda_python_flusk"
 
       - name: Run container
         run: |
