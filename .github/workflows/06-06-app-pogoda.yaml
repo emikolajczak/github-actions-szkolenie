@@ -82,7 +82,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           SHORT_SHA="${GITHUB_SHA::7}"
-          HUB_IMAGE_BASE="${{ secrets.DOCKERHUB_USERNAME }}/python_pogoda_29_09_2026"
+          HUB_IMAGE_BASE="${{ secrets.DOCKERHUB_USERNAME }}/piotrskoska/python_pogoda_29_09_2026"
 
           docker push "$HUB_IMAGE_BASE:emikolajczak"
           docker push "$HUB_IMAGE_BASE:$SHORT_SHA"
