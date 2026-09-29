@@ -1,13 +1,13 @@
-name: "05 – 1 – Event Filters and Activity Types"
+name: "05 – 1 – Event Filters and Activity Types "
 
 on:
   pull_request:
     types: 
-    - opened 
-    - synchronize
+      - opened 
+      - synchronize
     branches:
       - main
-    ignore_path:
+    paths-ignore:
       - README.md
 
 jobs:
