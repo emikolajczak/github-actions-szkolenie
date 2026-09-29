@@ -1,0 +1,13 @@
+name: "04 – Using Actions"
+
+on: push
+
+jobs:
+  build:
+    runs-on: lab
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7
+
+      - name: Printing Folders
+        run: ls -R
