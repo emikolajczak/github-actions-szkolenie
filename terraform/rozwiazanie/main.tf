@@ -8,3 +8,9 @@ resource "digitalocean_droplet" "example" {
     region = "fra1"
     size   = "s-1vcpu-1gb"
 }
+
+resource "digitalocean_vpc" "example" {
+    name   = "example-${random_id.suffix.hex}"
+    region = "fra1"
+}
+
