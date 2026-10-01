@@ -1,6 +1,4 @@
-resource "random_id" "suffix" {
-  byte_length = 5
-}
+
 
 resource "digitalocean_droplet" "example" {
   image    = "ubuntu-24-04-x64"
