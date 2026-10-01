@@ -1,0 +1,8 @@
+droplet_name   = "cw28-droplet"
+droplet_image  = "ubuntu-24-04-x64"
+droplet_size   = "s-1vcpu-1gb"
+region         = "fra1"
+vpc_name       = "cw28-vpc"
+vpc_ip_range   = "10.114.90.0/20"
+firewall_name  = "cw28-firewall"
+ssh_key_name   = "cw28-ssh-key"
