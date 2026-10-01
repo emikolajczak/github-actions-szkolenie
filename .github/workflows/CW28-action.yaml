@@ -1,7 +1,6 @@
 name: CW28 Terraform DigitalOcean
 
-on:
-	workflow_dispatch:
+on: workflow_dispatch
 
 permissions:
 	contents: read
