@@ -1,0 +1,44 @@
+name: Terraform DigitalOcean
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform-cw28-digitalocean
+  cancel-in-progress: false
+
+jobs:
+  terraform:
+    name: Terraform init, plan and apply
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cw28-tf-digitalocean
+    env:
+      TF_VAR_do_token: ${{ secrets.DO_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+          terraform_wrapper: false
+
+      - name: Prepare Terraform variables and generated file directories
+        run: |
+          cp terraform.tfvars.example terraform.tfvars
+          mkdir -p artifacts/inventory/host_vars
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform plan
+        run: terraform plan -input=false -out=tfplan
+
+      - name: Terraform apply
+        run: terraform apply -input=false -auto-approve tfplan
