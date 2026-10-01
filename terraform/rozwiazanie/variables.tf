@@ -15,3 +15,15 @@ variable "name_prefix" {
     error_message = "Prefix musi mieć od 1 do 32 znaków, zaczynać się małą literą i zawierać wyłącznie małe litery, cyfry oraz myślniki."
   }
 }
+
+variable "project_environment" {
+  description = "Środowisko projektu DigitalOcean."
+  type        = string
+  default     = "Development"
+  nullable    = false
+
+  validation {
+    condition     = contains(["Development", "Staging", "Production"], var.project_environment)
+    error_message = "Dozwolone środowiska: Development, Staging, Production."
+  }
+}
