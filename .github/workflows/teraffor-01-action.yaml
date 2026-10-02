@@ -43,3 +43,9 @@ jobs:
 
       - name: Terraform apply
         run: terraform apply -input=false -auto-approve tfplan
+
+      - name: Show generated key path
+        run: |
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          realpath artifacts/klucz_ed25519
+          test -f artifacts/klucz_ed25519

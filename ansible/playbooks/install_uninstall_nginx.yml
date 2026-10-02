@@ -1,0 +1,7 @@
+---
+
+- name: "[NGINX] - PLAYBOOK RUN"
+  hosts: "all"
+  
+  roles:
+    - { role: nginx }
