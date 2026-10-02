@@ -10,6 +10,5 @@ terraform {
     }
   }
   backend "pg" {
-    conn_str = "postgresql://student:${var.pg_pass}@localhost:5432/szkolenie?sslmode=disable"
   }
 }

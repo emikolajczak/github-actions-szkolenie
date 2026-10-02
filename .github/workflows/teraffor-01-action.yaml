@@ -36,7 +36,7 @@ jobs:
           mkdir -p artifacts/inventory/host_vars
 
       - name: Terraform init
-        run: terraform init -input=false
+        run: terraform init -input=false -backend-config="conn_str=postgresql://student:${TF_VAR_pg_pass}@localhost:5432/szkolenie?sslmode=disable"
 
       - name: Terraform plan
         run: terraform plan -input=false -out=tfplan
