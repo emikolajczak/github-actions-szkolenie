@@ -147,7 +147,6 @@ jobs:
           mkdir -p ansible
           printf '%s\n' "$SSH_KEY" > ansible/klucz_ed25519
           chmod 600 ansible/klucz_ed25519
-          ssh-keyscan -H dgo-host >> ~/.ssh/known_hosts
 
       - name: Run fullstack deployment playbook
         env:
