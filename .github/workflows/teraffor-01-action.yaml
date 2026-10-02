@@ -13,7 +13,7 @@ concurrency:
 jobs:
   terraform:
     name: Terraform init, plan and apply
-    runs-on: ubuntu-latest
+    runs-on: lab
     defaults:
       run:
         working-directory: cw28-tf-digitalocean
