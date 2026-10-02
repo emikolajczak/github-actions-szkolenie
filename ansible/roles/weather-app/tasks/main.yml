@@ -7,25 +7,35 @@
       - "docker_image_tag: {{ docker_image_tag | default('emikolajczak') }}"
       - "openweather_api_key: {{ openweather_api_key | default('') }}"
 
-- name: Pull weather app image created by GitHub Action 99-final-action
-  community.docker.docker_image:
-    name: "{{ dockerhub_username | default('emikolajczak') }}/python_pogoda_29_09_2026"
-    tag: "{{ docker_image_tag | default('emikolajczak') }}"
-    source: pull
-  become: true
-  when: dockerhub_username is defined or docker_image_tag is defined or true
+# - name: Pull weather app image created by GitHub Action 99-final-action
+#   community.docker.docker_image:
+#     name: "{{ dockerhub_username | default('emikolajczak') }}/python_pogoda_29_09_2026"
+#     tag: "{{ docker_image_tag | default('emikolajczak') }}"
+#     source: pull
+#   become: true
+#   when: dockerhub_username is defined or docker_image_tag is defined or true
+
+- name: Pull weather app image from Docker Hub
+  shell:
+    cmd: "docker pull {{ dockerhub_username | default('emikolajczak') }}/python_pogoda_29_09_2026:{{ docker_image_tag | default('emikolajczak') }}"
 
 - name: Run weather app container from Docker Hub image
-  community.docker.docker_container:
-    name: pogoda_api
-    image: "{{ dockerhub_username | default('emikolajczak') }}/python_pogoda_29_09_2026:{{ docker_image_tag | default('emikolajczak') }}"
-    state: started
-    restart_policy: always
-    published_ports:
-      - "8000:8000"
-    env:
-      OPENWEATHER_API_KEY: "{{ openweather_api_key | default('') }}"
+  shell:
+    cmd: "docker run -d --name pogoda_api -p 8000:8000 -e OPENWEATHER_API_KEY={{ openweather_api_key | default('') }} {{ dockerhub_username | default('emikolajczak') }}/python_pogoda_29_09_2026:{{ docker_image_tag | default('emikolajczak') }}"
   become: true
+
+
+# - name: Run weather app container from Docker Hub image
+#   community.docker.docker_container:
+#     name: pogoda_api
+#     image: "{{ dockerhub_username | default('emikolajczak') }}/python_pogoda_29_09_2026:{{ docker_image_tag | default('emikolajczak') }}"
+#     state: started
+#     restart_policy: always
+#     published_ports:
+#       - "8000:8000"
+#     env:
+#       OPENWEATHER_API_KEY: "{{ openweather_api_key | default('') }}"
+#   become: true
 
 - name: Configure Nginx reverse proxy on port 80
   become: true
