@@ -125,3 +125,24 @@ jobs:
 
           docker push "$HUB_IMAGE_BASE:emikolajczak"
           docker push "$HUB_IMAGE_BASE:$SHORT_SHA"
+
+  deploy-fullstack:
+    name: Deploy fullstack app with Ansible
+    needs: [terraform, build-and-test]
+    runs-on: lab
+    defaults:
+      run:
+        working-directory: ansible
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run fullstack deployment playbook
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_IMAGE_TAG: emikolajczak
+        run: |
+          ansible-playbook playbooks/fullstack_deploy.yml \
+            --extra-vars "dockerhub_username=${DOCKERHUB_USERNAME} docker_image_tag=${DOCKER_IMAGE_TAG} openweather_api_key=${OPENWEATHER_API_KEY}"

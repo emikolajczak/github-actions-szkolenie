@@ -1,0 +1,21 @@
+---
+
+- name: Pull weather app image created by GitHub Action 99-final-action
+  community.docker.docker_image:
+    name: "{{ dockerhub_username | default('emikolajczak') }}/python_pogoda_29_09_2026"
+    tag: "{{ docker_image_tag | default('emikolajczak') }}"
+    source: pull
+  become: true
+  when: dockerhub_username is defined or docker_image_tag is defined or true
+
+- name: Run weather app container from Docker Hub image
+  community.docker.docker_container:
+    name: pogoda_api
+    image: "{{ dockerhub_username | default('emikolajczak') }}/python_pogoda_29_09_2026:{{ docker_image_tag | default('emikolajczak') }}"
+    state: started
+    restart_policy: always
+    published_ports:
+      - "8000:8000"
+    env:
+      OPENWEATHER_API_KEY: "{{ openweather_api_key | default('') }}"
+  become: true

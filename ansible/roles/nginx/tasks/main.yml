@@ -28,3 +28,4 @@
     state: started
   become: true
   when: nginx_install == 'present'
+

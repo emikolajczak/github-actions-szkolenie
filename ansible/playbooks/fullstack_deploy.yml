@@ -1,0 +1,8 @@
+---
+
+- name: "Fullstack deployment playbook"
+  hosts: dgo
+  
+  roles:
+    - { role: nginx }
+    
