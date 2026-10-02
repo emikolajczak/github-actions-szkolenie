@@ -156,5 +156,7 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_IMAGE_TAG: emikolajczak
         run: |
+          echo "piotrskoska"
+          echo ""
           ansible-playbook playbooks/fullstack_deploy.yml \
-            --extra-vars "dockerhub_username=${DOCKERHUB_USERNAME} docker_image_tag=${DOCKER_IMAGE_TAG} openweather_api_key=${OPENWEATHER_API_KEY}" --limit dgo-host
+            --extra-vars "dockerhub_username=${DOCKERHUB_USERNAME} docker_image_tag=${DOCKER_IMAGE_TAG} openweather_api_key=${OPENWEATHER_API_KEY}" --limit dgo-host -vvv
