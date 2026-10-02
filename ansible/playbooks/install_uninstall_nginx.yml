@@ -1,7 +1,7 @@
 ---
 
 - name: "[NGINX] - PLAYBOOK RUN"
-  hosts: "all"
+  hosts: dgo
   
   roles:
     - { role: nginx }

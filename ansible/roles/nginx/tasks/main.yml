@@ -6,3 +6,25 @@
     state: "{{ nginx_install }}"
   become: true
   notify: restart nginx
+
+- name: Configure the default static page
+  copy:
+    dest: /var/www/html/index.html
+    content: |
+      <!doctype html>
+      <html lang="pl">
+      <head><meta charset="utf-8"><title>Strona</title></head>
+      <body><h1>czesc Emil</h1></body>
+      </html>
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  when: nginx_install == 'present'
+
+- name: Ensure Nginx is running
+  service:
+    name: nginx
+    state: started
+  become: true
+  when: nginx_install == 'present'
