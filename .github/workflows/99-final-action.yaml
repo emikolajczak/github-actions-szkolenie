@@ -51,6 +51,8 @@ jobs:
           test -f artifacts/klucz_ed25519
 
   build-and-test:
+    name: Build and test Docker image
+    needs: [terraform]
     runs-on: lab
     env:
       LOCAL_IMAGE_NAME: python_pogoda:test
