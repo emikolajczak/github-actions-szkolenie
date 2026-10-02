@@ -4,6 +4,6 @@
   hosts: dgo
 
   roles:
-    - { role: nginx }
-    - { role: weather-app }
+    - nginx
+    - weather-app 
     
