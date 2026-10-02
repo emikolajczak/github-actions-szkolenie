@@ -146,6 +146,8 @@ jobs:
         run: |
           mkdir -p ansible
           printf '%s\n' "$SSH_KEY" > ansible/klucz_ed25519
+          echo "SSH key path: $(pwd)/ansible/klucz_ed25519"
+          ls -l "$(pwd)/ansible/klucz_ed25519"
           chmod 600 ansible/klucz_ed25519
 
       - name: Run fullstack deployment playbook
