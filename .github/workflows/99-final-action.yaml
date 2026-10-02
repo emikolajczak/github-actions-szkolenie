@@ -1,0 +1,127 @@
+name: Terraform DigitalOcean
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform-cw28-digitalocean
+  cancel-in-progress: false
+
+jobs:
+  terraform:
+    name: Terraform init, plan and apply
+    runs-on: lab
+    defaults:
+      run:
+        working-directory: cw28-tf-digitalocean
+    env:
+      TF_VAR_do_token: ${{ secrets.DO_TOKEN }}
+      TF_VAR_pg_pass: ${{ secrets.PG_PASS }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+          terraform_wrapper: false
+
+      - name: Prepare Terraform variables and generated file directories
+        run: |
+          cp terraform.tfvars.example terraform.tfvars
+          mkdir -p artifacts/inventory/host_vars
+
+      - name: Terraform init
+        run: terraform init -input=false -backend-config="conn_str=postgresql://student:${TF_VAR_pg_pass}@localhost:5432/szkolenie?sslmode=disable"
+
+      - name: Terraform plan
+        run: terraform plan -input=false -out=tfplan
+
+      - name: Terraform apply
+        run: terraform apply -input=false -auto-approve tfplan
+
+      - name: Show generated key path
+        run: |
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          realpath artifacts/klucz_ed25519
+          test -f artifacts/klucz_ed25519
+
+  build-and-test:
+    runs-on: lab
+    env:
+      LOCAL_IMAGE_NAME: python_pogoda:test
+      WORKDIR: ./CWICZENIA/06-context/pogoda_python_flusk
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image for local testing
+        run: |
+          docker build -t "$LOCAL_IMAGE_NAME" "./CWICZENIA/06-context/pogoda_python_flusk"
+
+      - name: Run container
+        run: |
+          docker run -d \
+            --name pogoda_api \
+            -p 8000:8000 \
+            -e OPENWEATHER_API_KEY="${{ secrets.OPENWEATHER_API_KEY }}" \
+            "$LOCAL_IMAGE_NAME"
+
+      - name: Wait for API to start
+        run: |
+          echo "Waiting for API to start..."
+          sleep 10
+
+      - name: Test /weather endpoint using curl
+        run: |
+          set -e
+          echo "Testing /weather endpoint..."
+          curl -f "http://localhost:8000/weather?city=Warsaw&api_key=${{ secrets.OPENWEATHER_API_KEY }}"
+          echo
+          echo "OK - /weather endpoint returned 2xx."
+
+      - name: Show container logs on failure
+        if: failure()
+        run: |
+          echo "Container logs:"
+          docker logs pogoda_api || true
+
+      - name: Stop and remove container
+        if: always()
+        run: |
+          docker stop pogoda_api || true
+          docker rm pogoda_api || true
+
+      - name: Login to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Tag image for Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          HUB_IMAGE_BASE="${{ secrets.DOCKERHUB_USERNAME }}/python_pogoda_29_09_2026"
+
+          echo "Tagging image:"
+          echo " - $HUB_IMAGE_BASE:latest"
+          echo " - $HUB_IMAGE_BASE:$SHORT_SHA"
+
+          docker tag "$LOCAL_IMAGE_NAME" "$HUB_IMAGE_BASE:emikolajczak"
+          docker tag "$LOCAL_IMAGE_NAME" "$HUB_IMAGE_BASE:$SHORT_SHA"
+
+      - name: Push image to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          HUB_IMAGE_BASE="${{ secrets.DOCKERHUB_USERNAME }}/python_pogoda_29_09_2026"
+
+          docker push "$HUB_IMAGE_BASE:emikolajczak"
+          docker push "$HUB_IMAGE_BASE:$SHORT_SHA"
