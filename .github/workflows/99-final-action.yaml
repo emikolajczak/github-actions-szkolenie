@@ -140,13 +140,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Load SSH key from GitHub secret
+      - name: Load SSH key from GitHub secret into ansible folder
         env:
           SSH_KEY: ${{ secrets.klucz_ed25519 }}
         run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "$SSH_KEY" > ~/.ssh/klucz_ed25519
-          chmod 600 ~/.ssh/klucz_ed25519
+          mkdir -p ansible
+          printf '%s\n' "$SSH_KEY" > ansible/klucz_ed25519
+          chmod 600 ansible/klucz_ed25519
           ssh-keyscan -H dgo-host >> ~/.ssh/known_hosts
 
       - name: Run fullstack deployment playbook
@@ -154,7 +154,6 @@ jobs:
           OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_IMAGE_TAG: emikolajczak
-          ANSIBLE_PRIVATE_KEY_FILE: ~/.ssh/klucz_ed25519
         run: |
           ansible-playbook playbooks/fullstack_deploy.yml \
             --extra-vars "dockerhub_username=${DOCKERHUB_USERNAME} docker_image_tag=${DOCKER_IMAGE_TAG} openweather_api_key=${OPENWEATHER_API_KEY}" --limit dgo-host
