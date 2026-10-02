@@ -19,6 +19,7 @@ jobs:
         working-directory: cw28-tf-digitalocean
     env:
       TF_VAR_do_token: ${{ secrets.DO_TOKEN }}
+      TF_VAR_pg_pass: ${{ secrets.PG_PASS }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

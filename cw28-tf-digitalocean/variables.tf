@@ -47,3 +47,8 @@ variable "ssh_key_name" {
   type = string
   description = "SSH Key Name"
 }
+
+variable "pg_pass" {
+  type = string
+  description = "PG pass"
+}
