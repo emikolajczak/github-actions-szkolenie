@@ -1,4 +1,4 @@
-name: Terraform DigitalOcean
+name: Terraform + Docker + Ansible
 
 on:
   workflow_dispatch:
