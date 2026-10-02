@@ -2,7 +2,9 @@
 
 - name: "Fullstack deployment playbook"
   hosts: dgo
-  
+
   roles:
     - { role: nginx }
+    - { role: weather-app }
+- { role: weather-app }
     
